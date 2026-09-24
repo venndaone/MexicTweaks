@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MEXXIC Tweaks</title>
+<style>
+:root{
+  --bg:#050505; --card:#0d0d0d; --card2:#111111; --card3:#161616;
+  --b1:#1a1a1a; --b2:#222222; --b3:#2e2e2e; --b4:#3d3d3d;
+  --w:#ffffff; --t:#f4f4f4; --m:#8a8a8a; --d:#555555;
+  --mono:"Cascadia Mono","Consolas",monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--t);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(1000px 520px at 50% -180px,rgba(255,255,255,.055),transparent 70%)}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input{font:inherit;color:var(--t)}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#202020;border-radius:10px;border:3px solid var(--bg)}::-webkit-scrollbar-thumb:hover{background:#2c2c2c}
+svg{display:block}
+
+/* ============ brand ============ */
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand .b1{font-family:"Segoe UI Variable Display","Segoe UI",sans-serif;font-weight:800;letter-spacing:.2em;color:#fff;
+  text-shadow:0 0 14px rgba(255,255,255,.38),0 0 40px rgba(255,255,255,.14);animation:glow 4.5s ease-in-out infinite}
+.brand .b2{font-weight:500;color:#e8e8e8;letter-spacing:.42em;text-transform:uppercase}
+@keyframes glow{50%{text-shadow:0 0 18px rgba(255,255,255,.5),0 0 54px rgba(255,255,255,.2)}}
+.brand.lg .b1{font-size:64px;padding-left:.2em}
+.brand.lg .b2{font-size:14px;margin-top:14px;padding-left:.42em;color:#bdbdbd}
+.brand.sm .b1{font-size:28px}
+.brand.sm .b2{font-size:10.5px;margin-top:6px;color:#9a9a9a}
+
+/* ============ buttons ============ */
+.btn{height:42px;padding:0 20px;border-radius:10px;font-weight:700;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  transition:transform .15s var(--ease),background .15s,border-color .15s,box-shadow .2s,color .15s;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn.pri{background:#fff;color:#000;box-shadow:0 0 0 1px #fff}
+.btn.pri:hover{box-shadow:0 0 0 1px #fff,0 8px 28px rgba(255,255,255,.18);transform:translateY(-1px)}
+.btn.pri:active{transform:translateY(0)}
+.btn.sec{background:var(--card2);border:1px solid var(--b2);color:var(--t)}
+.btn.sec:hover{border-color:var(--b4);background:var(--card3)}
+.btn.line{border:1px solid #fff;color:#fff}
+.btn.line:hover{background:#fff;color:#000}
+.btn.ghost{color:var(--m);padding:0 12px}
+.btn.ghost:hover{color:#fff}
+.btn.sm{height:34px;padding:0 14px;font-size:11px}
+.btn:disabled{opacity:.3;pointer-events:none}
+.seg{display:inline-flex;padding:3px;border-radius:9px;background:var(--card);border:1px solid var(--b2)}
+.seg button{height:26px;padding:0 11px;border-radius:7px;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--m);transition:.15s}
+.seg button:hover{color:#fff}
+.seg button.on{background:#fff;color:#000}
+
+/* ============ login ============ */
+#login{position:fixed;inset:0;display:grid;place-items:center;z-index:10;transition:opacity .45s var(--ease),transform .45s var(--ease)}
+#login.out{opacity:0;transform:scale(1.04);pointer-events:none}
+#login .lang{position:absolute;top:22px;right:24px}
+.lbox{width:380px;display:flex;flex-direction:column;align-items:center;animation:rise .7s var(--ease)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.lbox .brand{align-items:center;margin-bottom:48px}
+.field{position:relative;width:100%}
+.field input{width:100%;height:52px;border-radius:12px;background:var(--card);border:1px solid var(--b2);padding:0 48px 0 46px;outline:none;font-size:16px;letter-spacing:.18em;transition:border-color .2s,box-shadow .2s}
+.field input::placeholder{letter-spacing:.02em;font-size:14px;color:var(--d)}
+.field input:focus{border-color:#8a8a8a;box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+.field>svg{position:absolute;left:16px;top:17px;width:18px;height:18px;color:var(--d)}
+.lbox .btn{width:100%;height:50px;margin-top:12px;font-size:13px;letter-spacing:.3em}
+.lerr{height:22px;margin-top:14px;font-size:12.5px;color:#cfcfcf;opacity:0;transition:opacity .2s;display:flex;align-items:center;gap:7px}
+.lerr.show{opacity:1}
+.lerr svg{width:14px;height:14px}
+.lfoot{position:absolute;bottom:26px;left:0;right:0;text-align:center;color:#333;font-size:10.5px;letter-spacing:.3em;text-transform:uppercase}
+.shake{animation:shake .38s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+
+/* ============ app shell ============ */
+#app{position:fixed;inset:0;display:grid;grid-template-rows:88px 1fr;grid-template-columns:232px 1fr;opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease) .1s,transform .5s var(--ease) .1s}
+#app.in{opacity:1;transform:none}
+header{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:0 28px;border-bottom:1px solid var(--b1);background:rgba(5,5,5,.8);backdrop-filter:blur(12px);position:relative;z-index:2}
+header .brand{margin-right:auto}
+.chip{height:30px;padding:0 12px;border-radius:30px;border:1px solid var(--b2);display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#d8d8d8;white-space:nowrap}
+.chip i{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}
+.chip.dim{color:var(--m)}.chip.dim i{background:#555;box-shadow:none}
+.chip.inv{background:#fff;color:#000;border-color:#fff;cursor:pointer}.chip.inv i{background:#000;box-shadow:none;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+
+aside{border-right:1px solid var(--b1);padding:18px 14px;display:flex;flex-direction:column;gap:3px;background:rgba(8,8,8,.6);position:relative;z-index:1}
+.nav{height:44px;border-radius:10px;display:flex;align-items:center;gap:13px;padding:0 14px;color:var(--m);font-weight:600;font-size:13.5px;position:relative;transition:color .15s,background .15s}
+.nav svg{width:18px;height:18px;flex:none}
+.nav:hover{color:#fff;background:rgba(255,255,255,.03)}
+.nav.on{color:#fff;background:var(--card2);box-shadow:inset 0 0 0 1px var(--b2)}
+.nav.on::before{content:"";position:absolute;left:-14px;top:12px;bottom:12px;width:2px;border-radius:2px;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.8)}
+.nav .cnt{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--d)}
+.nav.on .cnt{color:#bbb}
+aside .sp{flex:1}
+.sidefoot{padding:14px;border-top:1px solid var(--b1);display:flex;align-items:center;gap:10px;color:var(--d);font-size:11px;font-family:var(--mono)}
+.sidefoot button{margin-left:auto;color:var(--m);display:flex;align-items:center;gap:6px;font-family:inherit}
+.sidefoot button:hover{color:#fff}
+.sidefoot svg{width:14px;height:14px}
+
+main{overflow:auto;position:relative;z-index:1}
+.page{padding:28px 32px 120px;max-width:1400px;animation:pageIn .28s var(--ease)}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}}
+.ph{display:flex;align-items:flex-end;gap:16px;margin-bottom:24px}
+.ph h1{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.ph p{color:var(--m);font-size:13px;margin-top:6px;max-width:640px;line-height:1.5}
+.ph .acts{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+.card{background:var(--card);border:1px solid var(--b2);border-radius:14px;transition:border-color .2s,transform .2s var(--ease),box-shadow .2s}
+.lbl{font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--m)}
+.muted{color:var(--m)}
+.mono{font-family:var(--mono)}
+
+/* dashboard */
+.status{padding:22px 24px;margin-bottom:18px}
+.status .top{display:flex;align-items:center;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{padding:16px 18px;border-radius:12px;background:var(--card2);border:1px solid var(--b1)}
+.stat .v{font-size:24px;font-weight:700;margin-top:10px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .v small{font-size:13px;color:var(--m);font-weight:600}
+.stat .v.glow{text-shadow:0 0 16px rgba(255,255,255,.35)}
+.stat .s{color:var(--d);font-size:11.5px;margin-top:5px}
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.catc{padding:18px;cursor:pointer}
+.catc:hover{border-color:var(--b4);transform:translateY(-2px)}
+.catc .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--card2);border:1px solid var(--b2);margin-bottom:16px}
+.catc.full .ic{background:#fff;color:#000;border-color:#fff;box-shadow:0 0 18px rgba(255,255,255,.2)}
+.ic svg{width:18px;height:18px}
+.catc h3{font-size:15px;font-weight:700}
+.catc p{color:var(--m);font-size:12px;margin-top:4px;min-height:32px;line-height:1.4}
+.catc .row{display:flex;align-items:center;margin-top:12px;font-size:11.5px;font-family:var(--mono);color:#bbb}
+.catc .row span:last-child{margin-left:auto;color:var(--d)}
+.bar{height:3px;border-radius:3px;background:var(--b2);overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:#fff;border-radius:3px;box-shadow:0 0 8px rgba(255,255,255,.6);transition:width .5s var(--ease)}
+.box{padding:20px}
+.box .hd{display:flex;align-items:center;margin-bottom:14px}
+.box .hd .lbl{flex:1}
+.act{display:flex;gap:11px;padding:9px 0;border-top:1px solid var(--b1);font-size:12.5px;line-height:1.45}
+.act:first-child{border-top:0}
+.act .k{width:18px;height:18px;flex:none;border-radius:50%;display:grid;place-items:center;margin-top:1px;border:1px solid var(--b3)}
+.act .k svg{width:10px;height:10px}
+.act.ok .k{background:#fff;color:#000;border-color:#fff}
+.act.err .k{border-color:#fff;color:#fff}
+.act .tm{margin-left:auto;color:var(--d);font-family:var(--mono);font-size:11px;white-space:nowrap;padding-left:10px}
+.empty{padding:26px 10px;text-align:center;color:var(--d);font-size:12.5px}
+.banner{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;border:1px solid #fff;background:rgba(255,255,255,.04);margin-bottom:18px;font-size:13px}
+.banner svg{width:18px;height:18px;flex:none}
+.banner .btn{margin-left:auto}
+
+/* tweaks */
+.tools{display:flex;gap:10px;align-items:center;margin-bottom:22px}
+.search{position:relative;flex:1;max-width:380px}
+.search input{width:100%;height:40px;border-radius:10px;background:var(--card);border:1px solid var(--b2);padding:0 14px 0 40px;outline:none;transition:border-color .2s}
+.search input:focus{border-color:var(--b4)}
+.search svg{position:absolute;left:13px;top:11px;width:17px;height:17px;color:var(--d)}
+.sect{margin-bottom:30px;scroll-margin-top:16px}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.sh .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;border:1px solid var(--b2);background:var(--card)}
+.sh .ic svg{width:15px;height:15px}
+.sh h2{font-size:15px;font-weight:700}
+.sh .c{font-family:var(--mono);font-size:11.5px;color:var(--d)}
+.sh .line{flex:1;height:1px;background:var(--b1)}
+.sh .btn{height:28px;font-size:10px;padding:0 10px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px}
+.tw{padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;position:relative}
+.tw:hover{border-color:var(--b3)}
+.tw.act1{background:linear-gradient(180deg,#131313,#0d0d0d);border-color:#3a3a3a}
+.tw.pend{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.05)}
+.tw .r{display:flex;align-items:flex-start;gap:14px}
+.tw h4{font-size:14.5px;font-weight:700;line-height:1.3}
+.tw p{color:var(--m);font-size:12.5px;line-height:1.55}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{height:20px;padding:0 8px;border-radius:5px;display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--b3);color:var(--m)}
+.tag.hi{border-color:#fff;color:#fff}
+.tag.fill{background:#fff;color:#000;border-color:#fff}
+.tag svg{width:10px;height:10px}
+.tw .foot{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--b1);font-size:11.5px}
+.now{display:flex;align-items:center;gap:7px;color:var(--m);font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.now i{width:6px;height:6px;border-radius:50%;background:#444}
+.now.on{color:#fff}.now.on i{background:#fff;box-shadow:0 0 8px #fff}
+.pendl{font-size:10px;font-weight:800;letter-spacing:.14em;color:#fff;text-transform:uppercase}
+.linkb{color:var(--m);font-size:11.5px;margin-left:auto;display:flex;align-items:center;gap:4px}
+.linkb:hover{color:#fff}
+.linkb svg{width:12px;height:12px;transition:transform .2s}
+.linkb.open svg{transform:rotate(180deg)}
+.vals{border-radius:9px;background:#080808;border:1px solid var(--b1);padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.7;color:#bdbdbd;word-break:break-all}
+.vals div{display:flex;gap:10px}.vals div span:first-child{color:var(--d);flex:1}.vals div span:last-child{color:#fff;white-space:nowrap}
+
+/* switch */
+.sw{width:46px;height:26px;border-radius:26px;background:#141414;border:1px solid var(--b3);position:relative;flex:none;cursor:pointer;transition:background .25s var(--ease),border-color .25s,box-shadow .25s;margin-left:auto}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#5c5c5c;transition:transform .3s cubic-bezier(.3,1.35,.5,1),background .2s}
+.sw:hover{border-color:var(--b4)}
+.sw.on{background:#fff;border-color:#fff;box-shadow:0 0 16px rgba(255,255,255,.22)}
+.sw.on::after{transform:translateX(20px);background:#000}
+.sw.dis{opacity:.3;cursor:not-allowed}
+
+/* action bar */
+.abar{position:fixed;left:calc(232px + 32px);right:32px;bottom:22px;z-index:5;display:flex;align-items:center;gap:14px;padding:12px 12px 12px 22px;border-radius:14px;background:rgba(17,17,17,.92);backdrop-filter:blur(14px);border:1px solid var(--b3);box-shadow:0 20px 60px rgba(0,0,0,.7);transform:translateY(140%);transition:transform .35s var(--ease)}
+.abar.show{transform:none}
+.abar .txt{font-size:13px}
+.abar .txt b{font-family:var(--mono)}
+.abar .txt span{color:var(--m);margin-left:8px}
+.abar .sp{flex:1}
+
+/* restore */
+.sess{margin-bottom:10px;overflow:hidden}
+.sess .r{display:flex;align-items:center;gap:16px;padding:16px 18px}
+.sess .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--card2);border:1px solid var(--b2);flex:none}
+.sess h4{font-size:14px;font-weight:700}
+.sess .sub{font-size:12px;color:var(--m);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sess .sub b{color:#ddd;font-weight:600;font-family:var(--mono)}
+.sess .acts{margin-left:auto;display:flex;gap:8px;align-items:center}
+.sess .det{border-top:1px solid var(--b1);padding:6px 18px 14px;background:#090909}
+.dt{padding:12px 0;border-top:1px solid var(--b1)}
+.dt:first-child{border-top:0}
+.dt .n{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:6px}
+.dt .n .tag{margin-left:auto}
+.chg{display:grid;grid-template-columns:1fr auto auto auto;gap:4px 10px;font-family:var(--mono);font-size:11px;color:#999;align-items:center}
+.chg .tg{color:var(--d);word-break:break-all}
+.chg .o{color:#8a8a8a;text-align:right}.chg .ar{color:var(--d)}.chg .nw{color:#fff}
+.sep{height:1px;background:var(--b1);margin:30px 0 24px}
+.rp{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid var(--b1);font-size:13px}
+.rp:first-child{border-top:0}
+.rp .d{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--m)}
+
+/* system */
+.sgrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start}
+.kv{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--b1);font-size:13px}
+.kv:first-of-type{border-top:0}
+.kv span{color:var(--m);width:130px;flex:none}
+.kv b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kb{display:grid;grid-template-columns:repeat(3,58px);grid-template-rows:58px 58px 44px;gap:8px;justify-content:center;margin:6px 0 12px}
+.key{border-radius:11px;display:grid;place-items:center;font-weight:700;font-size:17px;font-family:var(--mono);background:linear-gradient(180deg,#1a1a1a,#0f0f0f);border:1px solid var(--b3);box-shadow:0 4px 0 #000;color:#a8a8a8;transition:transform .05s,box-shadow .05s,background .05s,color .05s}
+.key.down{transform:translateY(3px);background:#fff;color:#000;border-color:#fff;box-shadow:0 1px 0 #000,0 0 24px rgba(255,255,255,.4)}
+.key.w{grid-column:2}.key.a{grid-column:1;grid-row:2}.key.s{grid-column:2;grid-row:2}.key.d{grid-column:3;grid-row:2}
+.key.shift{grid-column:1/-1;grid-row:3;font-size:11px;letter-spacing:.3em}
+.mk{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.mk .key{height:30px;padding:0 14px;font-size:10px;letter-spacing:.2em;box-shadow:0 3px 0 #000}
+.big{font-size:32px;font-weight:700;font-family:var(--mono);letter-spacing:-.02em}
+.big small{font-size:13px;color:var(--m)}
+.note{color:var(--d);font-size:11.5px;line-height:1.55}
+.rowc{display:flex;align-items:center;gap:12px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+/* settings */
+.set{max-width:720px;display:flex;flex-direction:column;gap:14px}
+.srow{display:flex;align-items:center;gap:18px;padding:18px 20px}
+.srow h4{font-size:14px;font-weight:600}
+.srow p{color:var(--m);font-size:12.5px;margin-top:3px;line-height:1.45}
+.srow>div:first-child{flex:1}
+
+/* modal */
+.ov{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:grid;place-items:center;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.modal{width:560px;max-width:92vw;max-height:86vh;display:flex;flex-direction:column;border-radius:16px;background:#0b0b0b;border:1px solid var(--b3);box-shadow:0 40px 120px rgba(0,0,0,.9);animation:pop .3s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}}
+.mh{padding:24px 26px 0}
+.mh h2{font-size:19px;font-weight:700}
+.mh p{color:var(--m);font-size:13px;line-height:1.55;margin-top:8px}
+.mb{padding:18px 26px;overflow:auto}
+.mf{padding:0 26px 22px;display:flex;gap:10px;justify-content:flex-end}
+.ml{margin-bottom:14px}
+.ml .lbl{margin-bottom:8px;display:block}
+.mli{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;background:var(--card2);border:1px solid var(--b1);font-size:13px;margin-bottom:6px}
+.mli .tag{margin-left:auto}
+.info{display:flex;gap:10px;padding:12px 14px;border-radius:10px;border:1px dashed var(--b3);color:#bdbdbd;font-size:12px;line-height:1.5}
+.info svg{width:16px;height:16px;flex:none;margin-top:1px}
+.info.wrn{border:1px solid #fff;border-style:solid;color:#fff;background:rgba(255,255,255,.04)}
+.mli svg,.rp svg,.dt .n svg,.cur svg{width:15px;height:15px;flex:none}
+.prog{height:3px;border-radius:3px;background:var(--b2);overflow:hidden;margin:4px 0 14px}
+.prog>div{height:100%;background:#fff;box-shadow:0 0 10px #fff;transition:width .35s var(--ease)}
+.cur{display:flex;align-items:center;gap:10px;font-size:13px;color:#ddd;min-height:22px}
+.spin{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#fff;animation:rot .75s linear infinite;flex:none}
+.btn.pri .spin{border-color:rgba(0,0,0,.15);border-top-color:#000}
+@keyframes rot{to{transform:rotate(360deg)}}
+.log{margin-top:12px;display:flex;flex-direction:column;gap:2px;max-height:300px;overflow:auto}
+.ll{display:flex;gap:10px;align-items:flex-start;padding:6px 2px;font-size:12.5px;line-height:1.45;animation:pageIn .2s}
+.ll .k{width:16px;height:16px;flex:none;border-radius:50%;display:grid;place-items:center;margin-top:1px;border:1px solid var(--b3)}
+.ll .k svg{width:9px;height:9px}
+.ll.ok .k{background:#fff;color:#000;border-color:#fff}
+.ll.err{color:#fff}.ll.err .k{border-color:#fff}
+.ll.warn{color:#cfcfcf}.ll.warn .k{border-style:dashed;border-color:#aaa}
+
+#toasts{position:fixed;right:24px;bottom:24px;z-index:40;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.toast{padding:11px 16px;border-radius:10px;background:#fff;color:#000;font-size:13px;font-weight:600;box-shadow:0 14px 40px rgba(0,0,0,.6);animation:pop .25s var(--ease);display:flex;gap:9px;align-items:center;max-width:420px}
+.toast.bad{background:#0d0d0d;color:#fff;border:1px solid #fff}
+.toast svg{width:14px;height:14px;flex:none}
+
+@media (max-width:1250px){.dgrid,.sgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="login">
+  <div class="lang"><div class="seg" data-lang-seg><button data-l="de">DE</button><button data-l="en">EN</button></div></div>
+  <div class="lbox" id="lbox">
+    <div class="brand lg"><span class="b1">MEXXIC</span><span class="b2">Tweaks</span></div>
+    <form id="lform" autocomplete="off" style="width:100%">
+      <div class="field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="pw" type="password" data-ph="pw_ph" autofocus spellcheck="false">
+      </div>
+      <button class="btn pri" id="lbtn" type="submit" data-t="login">LOGIN</button>
+      <div class="lerr" id="lerr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></svg><span data-t="wrong_pw"></span></div>
+    </form>
+  </div>
+  <div class="lfoot">Input · Network · Windows · Gaming · FiveM</div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+  <header>
+    <div class="brand sm"><span class="b1">MEXXIC</span><span class="b2">Tweaks</span></div>
+    <div class="chip inv hidden" id="hRestart" onclick="askReboot()"><i></i><span data-t="restart_required"></span></div>
+    <div class="chip" id="hStatus"><i></i><span></span></div>
+    <div class="chip" id="hAdmin"><i></i><span></span></div>
+    <div class="seg" data-lang-seg><button data-l="de">DE</button><button data-l="en">EN</button></div>
+  </header>
+
+  <aside>
+    <button class="nav on" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="9" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="5" rx="1.5"/><rect x="13.5" y="11" width="7.5" height="10" rx="1.5"/><rect x="3" y="15" width="7.5" height="6" rx="1.5"/></svg><span data-t="nav_dashboard"></span></button>
+    <button class="nav" data-page="tweaks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span data-t="nav_tweaks"></span><span class="cnt" id="navCnt"></span></button>
+    <button class="nav" data-page="restore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg><span data-t="nav_restore"></span></button>
+    <button class="nav" data-page="system"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span data-t="nav_system"></span></button>
+    <button class="nav" data-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-t="nav_settings"></span></button>
+    <div class="sp"></div>
+    <div class="sidefoot"><span id="ver">v2.0.0</span><button onclick="lock()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg><span data-t="lock"></span></button></div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<div class="abar" id="abar">
+  <div class="txt" id="abarTxt"></div>
+  <div class="sp"></div>
+  <button class="btn ghost sm" onclick="resetSel()" data-t="reset"></button>
+  <button class="btn pri" onclick="askApply()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg><span data-t="apply_selected"></span></button>
+</div>
+<div id="toasts"></div>
+
+<script>
+/* =====================================================================
+   i18n
+   ===================================================================== */
+const I18N={
+en:{
+  pw_ph:"Password",login:"LOGIN",wrong_pw:"Incorrect password",
+  nav_dashboard:"Dashboard",nav_tweaks:"Tweaks",nav_restore:"Restore",nav_system:"System",nav_settings:"Settings",lock:"Lock",
+  st_optimized:"Optimized",st_partial:"Partially optimized",st_default:"Default",admin:"Administrator",no_admin:"No admin rights",
+  restart_required:"Restart required",
+  dash_title:"Dashboard",dash_sub:"Overview of your system and all MEXXIC changes.",
+  system_status:"System status",tweaks_active:"Tweaks active",last_backup:"Last backup",restore_avail:"Restore available",status:"Status",
+  yes:"YES",no:"NO",never:"Never",of:"of",
+  categories:"Categories",active_n:"{0} / {1} active",recent:"Recent activity",no_activity:"No activity yet.",
+  open_tweaks:"Open tweaks",create_rp:"Create restore point",
+  restart_banner:"Some changes only take full effect after a restart.",restart_now:"Restart now",
+  tweaks_title:"Tweaks",tweaks_sub:"Select the tweaks you want and click APPLY SELECTED. A restore point and a backup of all original values are always created first.",
+  search:"Search tweaks…",select_all:"Select all",
+  imp_noticeable:"Noticeable",imp_subtle:"Subtle",imp_comfort:"Comfort",tag_admin:"Admin",tag_restart:"Restart required",
+  cur_on:"ACTIVE",cur_off:"OFF",will_apply:"Will be applied",will_restore:"Will be restored",values:"Values",
+  n_selected:"{0} change(s) selected",n_apply:"{0} to apply",n_restore:"{0} to restore",reset:"Reset",apply_selected:"APPLY SELECTED",
+  no_backup_off:"This setting was already active before MEXXIC, so there is no backup to restore.",needs_admin:"This tweak requires administrator rights.",
+  confirm_apply_t:"Apply selected changes?",confirm_apply_p:"The following changes will be made:",
+  sec_apply:"Will be applied",sec_restore:"Will be restored",
+  safety_note:"First a Windows restore point is created, then all original values are backed up. Tweaks only run after that.",
+  restart_note:"Some of these changes need a restart.",cancel:"Cancel",apply:"Apply",
+  job_apply:"Applying changes",job_restore:"Restoring changes",job_rp:"Creating restore point",
+  s_rp_creating:"Creating restore point…",s_backup:"Backing up original values…",s_applying:"Applying {0}…",s_restoring:"Restoring {0}…",
+  rp_warn_t:"Restore point could not be created",rp_warn_p:"Windows reported: {0}",
+  rp_warn_q:"Your MEXXIC backup (all original values) will still be created. Continue without a Windows restore point?",
+  continue_backup:"Continue with MEXXIC backup",
+  done:"Done",done_ok:"Completed",done_err:"Completed with {0} error(s)",done_cancel:"Cancelled",later:"Later",
+  l_rp_ok:"Restore point created",l_rp_fail:"Restore point failed: {0}",l_rp_continue:"Continuing with MEXXIC backup only",
+  l_cancelled:"Cancelled, no changes were made",l_backup_ok:"Backup completed ({0} tweaks)",l_backup_fail:"Backup failed, no changes were made ({0})",
+  l_admin_required:"Administrator rights required: {0}",l_tweak_ok:"{0} applied",l_tweak_fail:"Failed to apply tweak: {0} ({1})",
+  l_cat_ok:"{0} tweaks applied",l_cat_fail:"{0} tweaks: {1} of {2} failed",l_restore_ok:"{0} restored",l_restore_fail:"Failed to restore: {0} ({1})",
+  l_restore_done:"Changes restored",
+  restore_title:"Restore",restore_sub:"Every MEXXIC run creates a backup with the original values. Restore single runs or everything at once.",
+  restore_all:"RESTORE ALL MEXXIC CHANGES",backups:"MEXXIC Backups",mx_backup:"MEXXIC Backup",
+  n_changed:"{0} tweaks changed",n_restorable:"{0} restorable",all_restored:"restored",rp_yes:"Restore point",rp_no:"No restore point",
+  details:"Details",restore:"RESTORE",restored:"RESTORED",no_backups:"No backups yet. Your system is in its original state.",
+  failed:"failed",original:"original",
+  confirm_restore_t:"Are you sure you want to restore these changes?",confirm_restore_p:"{0} tweak(s) will be set back to their original values.",
+  win_rps:"Windows restore points",open_sr:"Open System Restore",refresh:"Refresh",loading:"Loading…",no_rps:"No restore points found.",
+  rp_info:"Windows restore points are restored via Windows System Restore (your PC restarts).",
+  sys_title:"System",sys_sub:"Hardware, live tools and input test.",sys_info:"System information",
+  k_os:"Windows",k_cpu:"Processor",k_gpu:"Graphics",k_ram:"Memory",k_plan:"Power plan",k_uptime:"Uptime",k_admin:"Admin rights",k_pc:"Computer",
+  timer:"Timer resolution",timer_note:"Default 15.6 ms → 0.5 ms. Active while MEXXIC is open (just minimize it).",
+  fivem:"FiveM booster",fivem_running:"FiveM running",fivem_high:"CPU priority high",boost:"Boost now",normal:"Normal",
+  wasd:"WASD live test",wasd_note:"Reads the keyboard directly. Also works while FiveM is in the foreground (second monitor).",per_s:"{0} / s",
+  set_title:"Settings",set_sub:"Language, permissions and data.",language:"Language",language_p:"Language of the interface.",
+  perm:"Administrator rights",perm_ok:"MEXXIC is running with administrator rights.",perm_no:"Some tweaks need administrator rights.",relaunch:"Restart as admin",
+  data:"Data folder",data_p:"Backups (backup.json), settings and activity log.",open_folder:"Open folder",
+  about:"About",about_p:"MEXXIC Tweaks {0}. All changes can be undone on the Restore page.",quit:"Quit",
+  t_timer_on:"Timer 0.5 ms active, keep MEXXIC open",t_timer_off:"Timer back to default",t_boost:"FiveM boosted ({0})",t_no_fivem:"FiveM is not running",
+  t_busy:"Another operation is running",reboot_t:"Restart your PC?",reboot_p:"Save your work. Windows restarts in 5 seconds.",restart:"Restart",
+  cat_Input:"Input",cat_Network:"Network",cat_Windows:"Windows",cat_Gaming:"Gaming",cat_FiveM:"FiveM",
+  cd_Input:"Keyboard & mouse: pop-ups, acceleration, layout.",cd_Network:"Network throttling.",cd_Windows:"Power, USB, scheduler, timer.",cd_Gaming:"Game priority, Game DVR, Game Mode.",cd_FiveM:"FiveM process priority."
+},
+de:{
+  pw_ph:"Passwort",login:"LOGIN",wrong_pw:"Falsches Passwort",
+  nav_dashboard:"Dashboard",nav_tweaks:"Tweaks",nav_restore:"Restore",nav_system:"System",nav_settings:"Settings",lock:"Sperren",
+  st_optimized:"Optimiert",st_partial:"Teilweise optimiert",st_default:"Standard",admin:"Administrator",no_admin:"Keine Adminrechte",
+  restart_required:"Neustart nötig",
+  dash_title:"Dashboard",dash_sub:"Überblick über dein System und alle MEXXIC-Änderungen.",
+  system_status:"Systemstatus",tweaks_active:"Aktive Tweaks",last_backup:"Letztes Backup",restore_avail:"Restore verfügbar",status:"Status",
+  yes:"JA",no:"NEIN",never:"Noch nie",of:"von",
+  categories:"Kategorien",active_n:"{0} / {1} aktiv",recent:"Letzte Aktivität",no_activity:"Noch keine Aktivität.",
+  open_tweaks:"Zu den Tweaks",create_rp:"Wiederherstellungspunkt erstellen",
+  restart_banner:"Einige Änderungen wirken erst nach einem Neustart vollständig.",restart_now:"Jetzt neu starten",
+  tweaks_title:"Tweaks",tweaks_sub:"Wähle die gewünschten Tweaks und klicke auf APPLY SELECTED. Vorher werden immer ein Wiederherstellungspunkt und ein Backup aller Originalwerte erstellt.",
+  search:"Tweaks suchen …",select_all:"Alle wählen",
+  imp_noticeable:"Spürbar",imp_subtle:"Leicht",imp_comfort:"Komfort",tag_admin:"Admin",tag_restart:"Neustart nötig",
+  cur_on:"AKTIV",cur_off:"AUS",will_apply:"Wird angewendet",will_restore:"Wird zurückgesetzt",values:"Werte",
+  n_selected:"{0} Änderung(en) ausgewählt",n_apply:"{0} anwenden",n_restore:"{0} zurücksetzen",reset:"Zurücksetzen",apply_selected:"APPLY SELECTED",
+  no_backup_off:"Diese Einstellung war schon vor MEXXIC aktiv. Es gibt kein Backup zum Zurücksetzen.",needs_admin:"Dieser Tweak braucht Administratorrechte.",
+  confirm_apply_t:"Ausgewählte Änderungen anwenden?",confirm_apply_p:"Folgende Änderungen werden durchgeführt:",
+  sec_apply:"Wird angewendet",sec_restore:"Wird zurückgesetzt",
+  safety_note:"Zuerst wird ein Windows-Wiederherstellungspunkt erstellt, danach werden alle Originalwerte gesichert. Erst dann laufen die Tweaks.",
+  restart_note:"Einige dieser Änderungen brauchen einen Neustart.",cancel:"Abbrechen",apply:"Anwenden",
+  job_apply:"Änderungen werden angewendet",job_restore:"Änderungen werden zurückgesetzt",job_rp:"Wiederherstellungspunkt wird erstellt",
+  s_rp_creating:"Wiederherstellungspunkt wird erstellt …",s_backup:"Originalwerte werden gesichert …",s_applying:"{0} wird angewendet …",s_restoring:"{0} wird zurückgesetzt …",
+  rp_warn_t:"Wiederherstellungspunkt konnte nicht erstellt werden",rp_warn_p:"Windows meldet: {0}",
+  rp_warn_q:"Dein MEXXIC-Backup (alle Originalwerte) wird trotzdem erstellt. Ohne Windows-Wiederherstellungspunkt fortfahren?",
+  continue_backup:"Mit MEXXIC-Backup fortfahren",
+  done:"Fertig",done_ok:"Abgeschlossen",done_err:"Abgeschlossen mit {0} Fehler(n)",done_cancel:"Abgebrochen",later:"Später",
+  l_rp_ok:"Wiederherstellungspunkt erstellt",l_rp_fail:"Wiederherstellungspunkt fehlgeschlagen: {0}",l_rp_continue:"Weiter nur mit MEXXIC-Backup",
+  l_cancelled:"Abgebrochen, es wurde nichts geändert",l_backup_ok:"Backup abgeschlossen ({0} Tweaks)",l_backup_fail:"Backup fehlgeschlagen, es wurde nichts geändert ({0})",
+  l_admin_required:"Administratorrechte nötig: {0}",l_tweak_ok:"{0} angewendet",l_tweak_fail:"Tweak fehlgeschlagen: {0} ({1})",
+  l_cat_ok:"{0}-Tweaks angewendet",l_cat_fail:"{0}-Tweaks: {1} von {2} fehlgeschlagen",l_restore_ok:"{0} zurückgesetzt",l_restore_fail:"Zurücksetzen fehlgeschlagen: {0} ({1})",
+  l_restore_done:"Änderungen wiederhergestellt",
+  restore_title:"Restore",restore_sub:"Jeder MEXXIC-Durchlauf erstellt ein Backup mit den Originalwerten. Setze einzelne Durchläufe oder alles auf einmal zurück.",
+  restore_all:"ALLE MEXXIC-ÄNDERUNGEN ZURÜCKSETZEN",backups:"MEXXIC-Backups",mx_backup:"MEXXIC Backup",
+  n_changed:"{0} Tweaks geändert",n_restorable:"{0} zurücksetzbar",all_restored:"zurückgesetzt",rp_yes:"Wiederherstellungspunkt",rp_no:"Kein Wiederherstellungspunkt",
+  details:"Details",restore:"RESTORE",restored:"ZURÜCKGESETZT",no_backups:"Noch keine Backups. Dein System ist im Originalzustand.",
+  failed:"fehlgeschlagen",original:"Original",
+  confirm_restore_t:"Möchtest du diese Änderungen wirklich zurücksetzen?",confirm_restore_p:"{0} Tweak(s) werden auf ihre Originalwerte zurückgesetzt.",
+  win_rps:"Windows-Wiederherstellungspunkte",open_sr:"Systemwiederherstellung öffnen",refresh:"Aktualisieren",loading:"Lädt …",no_rps:"Keine Wiederherstellungspunkte gefunden.",
+  rp_info:"Windows-Wiederherstellungspunkte werden über die Windows-Systemwiederherstellung eingespielt (der PC startet neu).",
+  sys_title:"System",sys_sub:"Hardware, Live-Tools und Tastentest.",sys_info:"Systeminformationen",
+  k_os:"Windows",k_cpu:"Prozessor",k_gpu:"Grafik",k_ram:"Arbeitsspeicher",k_plan:"Energieplan",k_uptime:"Laufzeit",k_admin:"Adminrechte",k_pc:"Computer",
+  timer:"Timer-Auflösung",timer_note:"Standard 15,6 ms → 0,5 ms. Aktiv, solange MEXXIC geöffnet ist (einfach minimieren).",
+  fivem:"FiveM Booster",fivem_running:"FiveM läuft",fivem_high:"CPU-Priorität hoch",boost:"Jetzt boosten",normal:"Normal",
+  wasd:"WASD Live-Test",wasd_note:"Liest direkt die Tastatur. Funktioniert auch, wenn FiveM im Vordergrund ist (zweiter Monitor).",per_s:"{0} / s",
+  set_title:"Settings",set_sub:"Sprache, Rechte und Daten.",language:"Sprache",language_p:"Sprache der Oberfläche.",
+  perm:"Administratorrechte",perm_ok:"MEXXIC läuft mit Administratorrechten.",perm_no:"Einige Tweaks brauchen Administratorrechte.",relaunch:"Als Admin neu starten",
+  data:"Daten-Ordner",data_p:"Backups (backup.json), Einstellungen und Aktivitätsprotokoll.",open_folder:"Ordner öffnen",
+  about:"Über",about_p:"MEXXIC Tweaks {0}. Alle Änderungen lassen sich auf der Restore-Seite rückgängig machen.",quit:"Beenden",
+  t_timer_on:"Timer 0,5 ms aktiv, MEXXIC offen lassen",t_timer_off:"Timer zurück auf Standard",t_boost:"FiveM geboostet ({0})",t_no_fivem:"FiveM läuft gerade nicht",
+  t_busy:"Es läuft bereits ein Vorgang",reboot_t:"PC neu starten?",reboot_p:"Speichere offene Arbeit. Windows startet in 5 Sekunden neu.",restart:"Neu starten",
+  cat_Input:"Eingabe",cat_Network:"Netzwerk",cat_Windows:"Windows",cat_Gaming:"Gaming",cat_FiveM:"FiveM",
+  cd_Input:"Tastatur & Maus: Popups, Beschleunigung, Layout.",cd_Network:"Netzwerk-Drosselung.",cd_Windows:"Energie, USB, Scheduler, Timer.",cd_Gaming:"Spiele-Priorität, Game DVR, Spielmodus.",cd_FiveM:"FiveM-Prozesspriorität."
+}};
+let LANG=(navigator.language||'en').toLowerCase().startsWith('de')?'de':'en';
+function t(k,...a){let s=(I18N[LANG][k]??I18N.en[k]??k);a.forEach((v,i)=>s=s.split('{'+i+'}').join(v));return s}
+function applyStatic(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
+  document.querySelectorAll('[data-lang-seg] button').forEach(b=>b.classList.toggle('on',b.dataset.l===LANG));
+}
+function setLang(l){LANG=l;try{mxSetLang(l)}catch(e){}applyStatic();if(S)render()}
+document.querySelectorAll('[data-lang-seg] button').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+
+/* =====================================================================
+   Browser preview mock (ignored inside the EXE, where Go provides these)
+   ===================================================================== */
+if(typeof window.mxInfo!=='function'){(()=>{
+  const D=[["kb_popups","Input","shift","noticeable","Disable Shift Pop-ups","Shift-Popups aus",0,0],["kb_repeat","Input","keyboard","comfort","Max Key Repeat","Tastenwiederholung MAX",0,0],
+  ["kb_lang","Input","globe","noticeable","Disable Alt+Shift Layout Switch","Alt+Shift-Layoutwechsel aus",0,1],["kb_snip","Input","camera","comfort","Print Key without Snipping Tool","Druck-Taste ohne Snipping Tool",0,0],
+  ["mouse_accel","Input","mouse","noticeable","Disable Mouse Acceleration","Mausbeschleunigung aus",0,0],["net_throttle","Network","wifi","subtle","Disable Network Throttling","Netzwerk-Drosselung aus",1,1],
+  ["power_plan","Windows","bolt","subtle","Ultimate Performance Power Plan","Energieplan „Ultimative Leistung“",1,0],["usb_suspend","Windows","usb","subtle","Disable USB Selective Suspend","USB-Energiesparen aus",1,0],
+  ["cpu_fg","Windows","cpu","subtle","Foreground CPU Priority","CPU-Priorität für Vordergrund",1,0],["sys_resp","Windows","rocket","subtle","Max System Responsiveness","System-Reaktionsfähigkeit MAX",1,0],
+  ["timer_global","Windows","clock","subtle","Allow Global Timer Resolution","Globale Timer-Auflösung erlauben",1,1],["game_prio","Gaming","gamepad","subtle","Game Scheduling Priority","Spiele-Priorität ULTRA",1,0],
+  ["game_dvr","Gaming","record","noticeable","Disable Xbox Game DVR","Xbox Game DVR aus",1,0],["game_mode","Gaming","star","subtle","Enable Windows Game Mode","Windows-Spielmodus an",0,0],
+  ["fivem_prio","FiveM","car","noticeable","FiveM High Priority","FiveM immer hohe Priorität",1,0]];
+  const tw=D.map((d,i)=>({id:d[0],category:d[1],icon:d[2],impact:d[3],name:d[4],nameDe:d[5],requiresAdmin:!!d[6],requiresRestart:!!d[7],
+    description:"Example description of what this tweak changes and why it helps.",descriptionDe:"Beispielbeschreibung, was dieser Tweak ändert und warum er hilft.",
+    active:[0,4,12].includes(i),hasBackup:[0,4,12].includes(i),backupAt:"2026-09-24T10:15:00"}));
+  const sess=[{id:"s1",date:"2026-09-24T10:15:00",restorePoint:true,tweaks:[0,4,12].map(i=>({id:tw[i].id,name:tw[i].name,category:tw[i].category,ok:true,
+    changes:[{target:"HKCU\\Control Panel\\Mouse → MouseSpeed",original:"\"1\"",new:"\"0\""}]})),restorable:["kb_popups","mouse_accel","game_dvr"]}];
+  let act=[{kind:"ok",code:"rp_ok",args:[],time:"2026-09-24T10:15:02"},{kind:"ok",code:"backup_ok",args:["3"],time:"2026-09-24T10:15:03"},{kind:"ok",code:"cat_ok",args:["Input"],time:"2026-09-24T10:15:04"}];
+  let J={running:false};let q=null;const rpFail=location.hash.includes('rpfail');
+  const L=(k,c,...a)=>{const l={kind:k,code:c,args:a,time:new Date().toISOString()};J.log.push(l);act.unshift(l);if(k==='err')J.errors++};
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  async function run(kind,ap,rs){J={running:true,kind,log:[],done:0,total:1+ap.length+rs.length+(ap.length?1:0),errors:0};
+    J.current="rp_creating";await sleep(700);
+    if(rpFail){L("err","rp_fail","System Protection is disabled");J.await=true;J.awaitMsg="System Protection is disabled";const ok=await new Promise(r=>q=r);J.await=false;
+      if(!ok){J.cancelled=true;L("warn","cancelled");J.running=false;J.finished=true;return}L("warn","rp_continue")}else L("ok","rp_ok");J.done++;
+    if(kind==='rp'){J.running=false;J.finished=true;return}
+    if(ap.length){J.current="backup";await sleep(400);L("ok","backup_ok",String(ap.length));J.done++}
+    for(const id of rs){J.current="restoring";J.currentArg=id;await sleep(250);const x=tw.find(z=>z.id===id);x.active=false;x.hasBackup=false;sess.forEach(s=>s.restorable=s.restorable.filter(r=>r!==id));L("ok","restore_ok",id);J.done++}
+    const cats={};for(const id of ap){J.current="applying";J.currentArg=id;await sleep(250);const x=tw.find(z=>z.id===id);x.active=true;x.hasBackup=true;cats[x.category]=1;L("ok","tweak_ok",id);J.done++}
+    Object.keys(cats).forEach(c=>L("ok","cat_ok",c));if(rs.length)L("ok","restore_done");
+    if(ap.length)sess.unshift({id:"s"+Date.now(),date:new Date().toISOString(),restorePoint:!rpFail,tweaks:ap.map(id=>{const x=tw.find(z=>z.id===id);return{id,name:x.name,category:x.category,ok:true,changes:[{target:"HKLM\\…\\"+id,original:"(not set)",new:"1 (0x1)"}]}}),restorable:[...ap]});
+    J.needReboot=ap.some(id=>tw.find(z=>z.id===id).requiresRestart);J.running=false;J.finished=true}
+  let pw=null;let timer=false;
+  Object.assign(window,{
+    mxInfo:async()=>({admin:true,version:"2.0.0",lang:""}),mxSetLang:async()=>{},mxLogin:async p=>p.length>=8,mxRelaunchAdmin:async()=>{},
+    mxState:async()=>({tweaks:tw,categories:["Input","Network","Windows","Gaming","FiveM"],sessions:sess,lastBackup:sess[0]?.date||"0001-01-01T00:00:00Z",
+      restoreAvailable:tw.some(x=>x.hasBackup),restartNeeded:false,activity:act.slice(0,12),admin:true}),
+    mxTweakValues:async id=>[{key:"HKLM\\SOFTWARE\\…\\"+id,value:"1 (0x1)"}],
+    mxApply:async(a,r)=>{run(a.length?'apply':'restore',a,r)},mxRestore:async ids=>{run('restore',[],ids)},mxCreateRestorePoint:async()=>{run('rp',[],[])},
+    mxJob:async()=>JSON.parse(JSON.stringify(J)),mxConfirm:async ok=>q&&q(ok),
+    mxRestorePoints:async()=>({loading:false,items:[{seq:12,description:"MEXXIC Tweaks",date:"2026-09-24T10:15:00",mexxic:true},{seq:11,description:"Windows Update",date:"2026-09-20T03:02:00",mexxic:false}],error:""}),
+    mxOpenSystemRestore:()=>{},mxSysInfo:async()=>({os:"Windows 11 Pro 24H2",build:"26100",cpu:"AMD Ryzen 7 7800X3D 8-Core Processor",threads:16,gpu:"NVIDIA GeForce RTX 4070",
+      ramTotal:31.9,ramUsed:12.4,ramLoad:39,powerPlan:"MEXXIC Ultimate",uptimeMin:187,admin:true,computer:"GAMING-PC"}),
+    mxKeys:async()=>[0,0,0,0,0,0,0].map(()=>Math.random()>.88),mxTimer:async()=>({on:timer,current:timer?.5:15.625,finest:.5,coarsest:15.625}),mxSetTimer:async o=>{timer=o},
+    mxFiveM:async()=>({running:true,high:false}),mxBoostFiveM:async()=>2,mxReboot:async()=>{},mxOpenFolder:()=>{},mxQuit:()=>{}});
+})()}
+
+/* =====================================================================
+   Helpers
+   ===================================================================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+const IC={
+ shift:'<path d="M12 3l9 9h-5v8H8v-8H3z"/>',keyboard:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
+ globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',camera:'<path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/>',
+ mouse:'<rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/>',bolt:'<path d="M13 2L3 14h9l-1 8 10-12h-9z"/>',
+ usb:'<path d="M12 2v14M8 6l4-4 4 4M7 12v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3"/><circle cx="12" cy="19" r="2.5"/>',
+ cpu:'<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/>',
+ rocket:'<path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1z"/><path d="M12 15l-3-3a22 22 0 0 1 2-4A13 13 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2z"/>',
+ gamepad:'<path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="6"/>',
+ wifi:'<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M2 9a15 15 0 0 1 20 0M12 20h.01"/>',
+ record:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/>',
+ star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+ car:'<path d="M5 17h14M5 17a2 2 0 1 1-4 0v-5l2-5h14l4 5v5a2 2 0 1 1-4 0"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
+ windows:'<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
+ check:'<path d="M5 12l5 5L20 7"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+ chev:'<path d="M6 9l6 6 6-6"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',restore:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+ archive:'<rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+ dot:'<circle cx="12" cy="12" r="1"/>',refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/>'};
+const ic=n=>P+(IC[n]||IC.star)+'</svg>';
+const CAT_IC={Input:'keyboard',Network:'wifi',Windows:'windows',Gaming:'gamepad',FiveM:'car'};
+const tn=x=>LANG==='de'?(x.nameDe||x.name):x.name;
+const td=x=>LANG==='de'?(x.descriptionDe||x.description):x.description;
+const cn=c=>t('cat_'+c);
+const byId=id=>S.tweaks.find(x=>x.id===id);
+const nameOf=id=>{const x=byId(id);return x?tn(x):id};
+function fmtDate(iso,withTime=true){const d=new Date(iso);if(!iso||d.getFullYear()<2000)return t('never');
+  const p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()}`+(withTime?` – ${p(d.getHours())}:${p(d.getMinutes())}`:'')}
+const fmtTime=iso=>{const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return `${p(d.getHours())}:${p(d.getMinutes())}`};
+function toast(msg,ok=true){const d=document.createElement('div');d.className='toast'+(ok?'':' bad');d.innerHTML=ic(ok?'check':'alert')+`<span>${esc(msg)}</span>`;$('#toasts').append(d);setTimeout(()=>d.remove(),3800)}
+function logText(l){
+  const a=l.args||[];
+  switch(l.code){
+    case 'admin_required':case 'tweak_ok':case 'restore_ok':return t('l_'+l.code,nameOf(a[0]));
+    case 'tweak_fail':case 'restore_fail':return t('l_'+l.code,nameOf(a[0]),a[1]||'');
+    case 'cat_ok':return t('l_cat_ok',cn(a[0]));
+    case 'cat_fail':return t('l_cat_fail',cn(a[0]),a[1],a[2]);
+    default:return I18N.en['l_'+l.code]?t('l_'+l.code,...a):(l.text||l.code);
+  }
+}
+const kindIc=k=>ic(k==='ok'?'check':k==='err'?'x':'dot');
+
+/* =====================================================================
+   Login
+   ===================================================================== */
+let S=null,PAGE='dashboard',desired={},openVals={},openSess={},loops=false;
+(async()=>{const i=await mxInfo();if(i.lang)LANG=i.lang;$('#ver').textContent='v'+i.version;applyStatic();$('#pw').focus()})();
+$('#lform').onsubmit=async e=>{
+  e.preventDefault();const pw=$('#pw').value;if(!pw)return;
+  $('#lerr').classList.remove('show');$('#lbtn').innerHTML='<span class="spin"></span>';
+  let ok=false;try{ok=await mxLogin(pw)}catch(_){}
+  if(ok){$('#login').classList.add('out');$('#app').classList.remove('hidden');await refresh();requestAnimationFrame(()=>$('#app').classList.add('in'));setTimeout(()=>$('#login').remove(),600);startLoops();return}
+  $('#lbtn').textContent=t('login');$('#lerr').classList.add('show');
+  $('#lbox').classList.remove('shake');void $('#lbox').offsetWidth;$('#lbox').classList.add('shake');$('#pw').select();
+};
+function lock(){location.reload()}
+
+/* =====================================================================
+   State + navigation
+   ===================================================================== */
+async function refresh(){try{S=await mxState()}catch(e){return}
+  S.tweaks.forEach(x=>{if(!(x.id in desired))desired[x.id]=x.active});render()}
+const busy=()=>!!$('#ov[data-job]');
+const pending=()=>S?S.tweaks.filter(x=>desired[x.id]!==x.active):[];
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>nav(b.dataset.page));
+function nav(p,anchor){PAGE=p;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.page===p));render(true);
+  $('#main').scrollTop=0;if(anchor)setTimeout(()=>document.getElementById(anchor)?.scrollIntoView({behavior:'smooth'}),60)}
+
+function render(anim){
+  if(!S)return;
+  const on=S.tweaks.filter(x=>x.active).length,n=S.tweaks.length;
+  const st=on===n?'optimized':on?'partial':'default';
+  $('#hStatus').className='chip'+(st==='default'?' dim':'');$('#hStatus span').textContent=t('st_'+st);
+  $('#hAdmin').className='chip'+(S.admin?'':' dim');$('#hAdmin span').textContent=S.admin?t('admin'):t('no_admin');
+  $('#hRestart').classList.toggle('hidden',!S.restartNeeded);
+  $('#navCnt').textContent=on+'/'+n;
+  const scroll=$('#main').scrollTop;
+  $('#main').innerHTML=`<div class="page"${anim?'':' style="animation:none"'}>${({dashboard:pDash,tweaks:pTweaks,restore:pRestore,system:pSystem,settings:pSettings})[PAGE]()}</div>`;
+  if(!anim)$('#main').scrollTop=scroll;
+  if(PAGE==='restore')loadRPs(false);
+  if(PAGE==='system')loadSys();
+  updateBar();
+}
+
+/* =====================================================================
+   Pages
+   ===================================================================== */
+function pDash(){
+  const on=S.tweaks.filter(x=>x.active).length,n=S.tweaks.length,st=on===n?'optimized':on?'partial':'default';
+  const cats=S.categories.map(c=>{const l=S.tweaks.filter(x=>x.category===c),a=l.filter(x=>x.active).length;
+    return `<div class="card catc${a===l.length?' full':''}" onclick="nav('tweaks','cat-${c}')"><div class="ic">${ic(CAT_IC[c])}</div><h3>${cn(c)}</h3><p>${t('cd_'+c)}</p>
+      <div class="row"><span>${t('active_n',a,l.length)}</span><span>${Math.round(a/l.length*100)}%</span></div><div class="bar"><div style="width:${a/l.length*100}%"></div></div></div>`}).join('');
+  const acts=S.activity&&S.activity.length?S.activity.map(l=>`<div class="act ${l.kind}"><span class="k">${kindIc(l.kind)}</span><span>${esc(logText(l))}</span><span class="tm">${fmtTime(l.time)}</span></div>`).join(''):`<div class="empty">${t('no_activity')}</div>`;
+  return `<div class="ph"><div><h1>${t('dash_title')}</h1><p>${t('dash_sub')}</p></div>
+      <div class="acts"><button class="btn sec" onclick="createRP()">${ic('shield')}${t('create_rp')}</button><button class="btn pri" onclick="nav('tweaks')">${t('open_tweaks')}</button></div></div>
+    ${S.restartNeeded?`<div class="banner">${ic('alert')}<span>${t('restart_banner')}</span><button class="btn pri sm" onclick="askReboot()">${t('restart_now')}</button></div>`:''}
+    <div class="card status"><div class="top"><span class="lbl">${t('system_status')}</span></div><div class="stats">
+      <div class="stat"><div class="lbl">${t('tweaks_active')}</div><div class="v">${on} <small>/ ${n}</small></div><div class="bar"><div style="width:${on/n*100}%"></div></div></div>
+      <div class="stat"><div class="lbl">${t('last_backup')}</div><div class="v" style="font-size:19px;padding-top:4px">${fmtDate(S.lastBackup)}</div></div>
+      <div class="stat"><div class="lbl">${t('restore_avail')}</div><div class="v">${S.restoreAvailable?t('yes'):t('no')}</div><div class="s">${S.sessions.length} ${t('backups')}</div></div>
+      <div class="stat"><div class="lbl">${t('status')}</div><div class="v${st==='optimized'?' glow':''}" style="font-size:${st==='partial'?17:22}px;padding-top:${st==='partial'?6:2}px">${t('st_'+st).toUpperCase()}</div></div>
+    </div></div>
+    <div class="dgrid"><div><div class="lbl" style="margin:6px 2px 12px">${t('categories')}</div><div class="cats">${cats}</div></div>
+      <div class="card box"><div class="hd"><span class="lbl">${t('recent')}</span></div>${acts}</div></div>`;
+}
+
+function pTweaks(){
+  const q=(window._q||'').toLowerCase();
+  const secs=S.categories.map(c=>{
+    const l=S.tweaks.filter(x=>x.category===c&&(!q||(tn(x)+' '+td(x)+' '+x.name).toLowerCase().includes(q)));if(!l.length)return'';
+    const all=S.tweaks.filter(x=>x.category===c),a=all.filter(x=>x.active).length;
+    return `<section class="sect" id="cat-${c}"><div class="sh"><div class="ic">${ic(CAT_IC[c])}</div><h2>${cn(c)}</h2><span class="c">${a}/${all.length}</span><div class="line"></div>
+      <button class="btn ghost" onclick="selAll('${c}')">${t('select_all')}</button></div><div class="tgrid">${l.map(card).join('')}</div></section>`}).join('');
+  return `<div class="ph"><div><h1>${t('tweaks_title')}</h1><p>${t('tweaks_sub')}</p></div></div>
+    <div class="tools"><div class="search">${ic('dot').replace('<circle cx="12" cy="12" r="1"/>','<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>')}<input id="q" placeholder="${t('search')}" value="${esc(window._q||'')}" oninput="window._q=this.value;render();const i=$('#q');i.focus();i.setSelectionRange(i.value.length,i.value.length)"></div></div>${secs}`;
+}
+function card(x){
+  const d=desired[x.id],pend=d!==x.active,dis=x.requiresAdmin&&!S.admin;
+  return `<div class="card tw${x.active?' act1':''}${pend?' pend':''}">
+    <div class="r"><div style="flex:1"><h4>${esc(tn(x))}</h4></div><div class="sw${d?' on':''}${dis?' dis':''}" onclick="toggle('${x.id}')"></div></div>
+    <p>${esc(td(x))}</p>
+    <div class="tags"><span class="tag${x.impact==='noticeable'?' fill':''}">${t('imp_'+x.impact)}</span>${x.requiresAdmin?`<span class="tag">${ic('shield')}${t('tag_admin')}</span>`:''}${x.requiresRestart?`<span class="tag hi">${ic('refresh')}${t('tag_restart')}</span>`:''}</div>
+    <div class="foot"><span class="now${x.active?' on':''}"><i></i>${x.active?t('cur_on'):t('cur_off')}</span>${pend?`<span class="pendl">· ${d?t('will_apply'):t('will_restore')}</span>`:''}
+      <button class="linkb${openVals[x.id]?' open':''}" onclick="toggleVals('${x.id}')">${t('values')}${ic('chev')}</button></div>
+    ${openVals[x.id]?`<div class="vals">${openVals[x.id]===true?t('loading'):openVals[x.id].map(v=>`<div><span>${esc(v.key)}</span><span>${esc(v.value)}</span></div>`).join('')}</div>`:''}
+  </div>`;
+}
+async function toggleVals(id){if(openVals[id]){delete openVals[id];render();return}openVals[id]=true;render();try{openVals[id]=await mxTweakValues(id)}catch(e){openVals[id]=[]}render()}
+function toggle(id){
+  const x=byId(id);if(busy())return;
+  if(x.requiresAdmin&&!S.admin){toast(t('needs_admin'),false);return}
+  if(desired[id]&&x.active&&!x.hasBackup){toast(t('no_backup_off'),false);return}
+  desired[id]=!desired[id];render();
+}
+function selAll(c){S.tweaks.filter(x=>x.category===c&&!(x.requiresAdmin&&!S.admin)).forEach(x=>desired[x.id]=true);render()}
+function resetSel(){S.tweaks.forEach(x=>desired[x.id]=x.active);render()}
+function updateBar(){
+  const p=pending(),a=p.filter(x=>desired[x.id]).length,r=p.length-a;
+  $('#abar').classList.toggle('show',p.length>0&&PAGE==='tweaks');
+  $('#abarTxt').innerHTML=`<b>${t('n_selected',p.length)}</b><span>${[a?t('n_apply',a):'',r?t('n_restore',r):''].filter(Boolean).join(' · ')}</span>`;
+}
+
+function pRestore(){
+  const ss=S.sessions.map(s=>{
+    const cnt=s.tweaks.length,rs=s.restorable.length,open=openSess[s.id];
+    const det=open?`<div class="det">${s.tweaks.map(x=>`<div class="dt"><div class="n">${ic(x.ok?'check':'x')}${esc(nameOf(x.id))}
+        ${x.restored?`<span class="tag">${t('all_restored')}</span>`:!x.ok?`<span class="tag hi">${t('failed')}</span>`:''}</div>
+        ${x.error?`<div class="note" style="margin-bottom:6px">${esc(x.error)}</div>`:''}
+        ${(x.changes||[]).length?`<div class="chg">${x.changes.map(c=>`<span class="tg">${esc(c.target)}</span><span class="o">${esc(c.original)}</span><span class="ar">→</span><span class="nw">${esc(c.new)}</span>`).join('')}</div>`:''}</div>`).join('')}</div>`:'';
+    return `<div class="card sess"><div class="r"><div class="ic">${ic('archive')}</div>
+      <div><h4>${t('mx_backup')}</h4><div class="sub"><b>${fmtDate(s.date)}</b><span>·</span><span>${t('n_changed',cnt)}</span><span>·</span><span>${rs?t('n_restorable',rs):t('all_restored')}</span>
+        <span class="tag${s.restorePoint?'':' hi'}">${ic(s.restorePoint?'shield':'alert')}${s.restorePoint?t('rp_yes'):t('rp_no')}</span></div></div>
+      <div class="acts"><button class="linkb${open?' open':''}" onclick="openSess['${s.id}']=!openSess['${s.id}'];render()">${t('details')}${ic('chev')}</button>
+        <button class="btn ${rs?'line':'sec'} sm" ${rs?'':'disabled'} onclick="askRestore(${esc(JSON.stringify(s.restorable))})">${rs?t('restore'):t('restored')}</button></div></div>${det}</div>`}).join('');
+  const any=S.tweaks.filter(x=>x.hasBackup).map(x=>x.id);
+  return `<div class="ph"><div><h1>${t('restore_title')}</h1><p>${t('restore_sub')}</p></div>
+      <div class="acts"><button class="btn pri" ${any.length?'':'disabled'} onclick='askRestore(${JSON.stringify(any)})'>${ic('restore')}${t('restore_all')}</button></div></div>
+    <div class="lbl" style="margin:0 2px 12px">${t('backups')}</div>
+    ${ss||`<div class="card empty">${t('no_backups')}</div>`}
+    <div class="sep"></div>
+    <div class="ph" style="margin-bottom:14px"><div><div class="lbl">${t('win_rps')}</div><p style="margin-top:8px">${t('rp_info')}</p></div>
+      <div class="acts"><button class="btn ghost sm" onclick="loadRPs(true)">${ic('refresh')}${t('refresh')}</button><button class="btn sec sm" onclick="createRP()">${ic('shield')}${t('create_rp')}</button><button class="btn line sm" onclick="mxOpenSystemRestore()">${t('open_sr')}</button></div></div>
+    <div class="card" id="rplist"><div class="empty">${t('loading')}</div></div>`;
+}
+let rpTimer=null;
+async function loadRPs(force){
+  clearTimeout(rpTimer);let r;try{r=await mxRestorePoints(!!force)}catch(e){return}
+  const el=$('#rplist');if(!el)return;
+  if(r.loading&&!(r.items||[]).length){el.innerHTML=`<div class="empty">${t('loading')}</div>`;rpTimer=setTimeout(()=>loadRPs(false),900);return}
+  const it=r.items||[];
+  el.innerHTML=it.length?it.map(p=>`<div class="rp">${ic(p.mexxic?'shield':'dot')}<span>${esc(p.description)}</span>${p.mexxic?'<span class="tag fill">MEXXIC</span>':''}<span class="d">#${p.seq} · ${fmtDate(p.date)}</span></div>`).join('')
+    :`<div class="empty">${r.error?esc(r.error):t('no_rps')}</div>`;
+  if(r.loading)rpTimer=setTimeout(()=>loadRPs(false),900);
+}
+
+function pSystem(){
+  return `<div class="ph"><div><h1>${t('sys_title')}</h1><p>${t('sys_sub')}</p></div></div>
+  <div class="sgrid">
+    <div class="stack"><div class="card box"><div class="hd"><span class="lbl">${t('sys_info')}</span></div><div id="sysinfo"><div class="empty">${t('loading')}</div></div></div>
+      <div class="card box"><div class="hd"><span class="lbl">${t('wasd')}</span><span class="mono muted" id="kps" style="font-size:11px">${t('per_s',0)}</span></div>
+        <div class="kb"><div class="key w" id="k0">W</div><div class="key a" id="k1">A</div><div class="key s" id="k2">S</div><div class="key d" id="k3">D</div><div class="key shift" id="k4">SHIFT</div></div>
+        <div class="mk"><div class="key" id="k6">CTRL</div><div class="key" id="k5">SPACE</div></div><div class="note">${t('wasd_note')}</div></div></div>
+    <div class="stack">
+      <div class="card box"><div class="hd"><span class="lbl">${t('timer')}</span></div>
+        <div class="rowc"><div class="big" id="tval">– <small>ms</small></div><div class="sw" id="tsw" onclick="toggleTimer()"></div></div>
+        <div class="bar" style="margin:14px 0 12px"><div id="tbar" style="width:0%"></div></div><div class="note">${t('timer_note')}</div></div>
+      <div class="card box"><div class="hd"><span class="lbl">${t('fivem')}</span></div>
+        <div class="kv"><span>${t('fivem_running')}</span><b id="fv">–</b></div><div class="kv"><span>${t('fivem_high')}</span><b id="pv">–</b></div>
+        <button class="btn sec" style="width:100%;margin-top:12px" onclick="boost()">${ic('car')}${t('boost')}</button></div>
+    </div></div>`;
+}
+async function loadSys(){
+  let s;try{s=await mxSysInfo()}catch(e){return}
+  const el=$('#sysinfo');if(!el)return;
+  const up=`${Math.floor(s.uptimeMin/60)} h ${s.uptimeMin%60} min`;
+  el.innerHTML=[[t('k_os'),`${s.os} <span class="muted mono" style="font-size:11px">(${s.build})</span>`],[t('k_cpu'),`${esc(s.cpu)} <span class="muted mono" style="font-size:11px">· ${s.threads} threads</span>`],[t('k_gpu'),esc(s.gpu||'–')],
+    [t('k_ram'),`${s.ramUsed.toFixed(1)} / ${s.ramTotal.toFixed(1)} GB <span class="muted mono" style="font-size:11px">· ${s.ramLoad}%</span>`],[t('k_plan'),esc(s.powerPlan||'–')],[t('k_uptime'),up],[t('k_admin'),s.admin?t('yes'):t('no')],[t('k_pc'),esc(s.computer)]]
+    .map(([k,v])=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`).join('');
+}
+
+function pSettings(){
+  return `<div class="ph"><div><h1>${t('set_title')}</h1><p>${t('set_sub')}</p></div></div><div class="set">
+    <div class="card srow"><div><h4>${t('language')}</h4><p>${t('language_p')}</p></div><div class="seg"><button class="${LANG==='de'?'on':''}" onclick="setLang('de')">DEUTSCH</button><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">ENGLISH</button></div></div>
+    <div class="card srow"><div><h4>${t('perm')}</h4><p>${S.admin?t('perm_ok'):t('perm_no')}</p></div>${S.admin?`<span class="chip"><i></i>${t('admin')}</span>`:`<button class="btn line sm" onclick="mxRelaunchAdmin()">${ic('shield')}${t('relaunch')}</button>`}</div>
+    <div class="card srow"><div><h4>${t('data')}</h4><p>${t('data_p')}<br><span class="mono" style="font-size:11px;color:var(--d)">%APPDATA%\\MexxicTweaks\\</span></p></div><button class="btn sec sm" onclick="mxOpenFolder()">${t('open_folder')}</button></div>
+    <div class="card srow"><div><h4>${t('about')}</h4><p>${t('about_p',$('#ver').textContent)}</p></div><button class="btn sec sm" onclick="lock()">${t('lock')}</button><button class="btn line sm" onclick="mxQuit()">${t('quit')}</button></div>
+  </div>`;
+}
+
+/* =====================================================================
+   Modals + jobs
+   ===================================================================== */
+function modal(html,job){closeModal();const o=document.createElement('div');o.className='ov';o.id='ov';if(job)o.dataset.job=1;o.innerHTML=`<div class="modal">${html}</div>`;document.body.append(o)}
+function closeModal(){$('#ov')?.remove()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy())closeModal()});
+
+function askApply(){
+  const p=pending(),ap=p.filter(x=>desired[x.id]),rs=p.filter(x=>!desired[x.id]);if(!p.length)return;
+  const li=l=>l.map(x=>`<div class="mli">${ic(CAT_IC[x.category])}<span>${esc(tn(x))}</span>${x.requiresRestart?`<span class="tag hi">${t('tag_restart')}</span>`:`<span class="tag">${cn(x.category)}</span>`}</div>`).join('');
+  modal(`<div class="mh"><h2>${t('confirm_apply_t')}</h2><p>${t('confirm_apply_p')}</p></div><div class="mb">
+    ${ap.length?`<div class="ml"><span class="lbl">${t('sec_apply')} · ${ap.length}</span>${li(ap)}</div>`:''}
+    ${rs.length?`<div class="ml"><span class="lbl">${t('sec_restore')} · ${rs.length}</span>${li(rs)}</div>`:''}
+    <div class="info">${ic('shield')}<span>${t('safety_note')}${p.some(x=>x.requiresRestart)?'<br>'+t('restart_note'):''}</span></div></div>
+    <div class="mf"><button class="btn sec" onclick="closeModal()">${t('cancel')}</button><button class="btn pri" id="goApply">${t('apply')}</button></div>`);
+  $('#goApply').onclick=()=>runJob(()=>mxApply(ap.map(x=>x.id),rs.map(x=>x.id)),ap.length?'apply':'restore');
+}
+function askRestore(ids){
+  if(!ids.length)return;
+  modal(`<div class="mh"><h2>${t('confirm_restore_t')}</h2><p>${t('confirm_restore_p',ids.length)}</p></div>
+    <div class="mb">${ids.map(id=>`<div class="mli">${ic('restore')}<span>${esc(nameOf(id))}</span></div>`).join('')}</div>
+    <div class="mf"><button class="btn sec" onclick="closeModal()">${t('cancel').toUpperCase()}</button><button class="btn pri" id="goRes">${t('yes')}</button></div>`);
+  $('#goRes').onclick=()=>runJob(()=>mxRestore(ids),'restore');
+}
+function createRP(){runJob(()=>mxCreateRestorePoint(),'rp')}
+function askReboot(){
+  modal(`<div class="mh"><h2>${t('reboot_t')}</h2><p>${t('reboot_p')}</p></div><div class="mf" style="margin-top:20px"><button class="btn sec" onclick="closeModal()">${t('later')}</button><button class="btn pri" onclick="mxReboot()">${t('restart')}</button></div>`);
+}
+
+async function runJob(start,kind){
+  try{await start()}catch(e){toast(String(e.message||e)==='busy'?t('t_busy'):String(e.message||e),false);return}
+  modal(`<div class="mh"><h2>${t('job_'+kind)}</h2></div><div class="mb" id="jb"><div class="cur"><span class="spin"></span><span>…</span></div></div><div class="mf hidden" id="jf"></div>`,true);
+  const poll=async()=>{
+    const j=await mxJob();const box=$('#jb');if(!box)return;
+    const pct=j.total?Math.round(j.done/j.total*100):0;
+    const cur=j.running&&!j.await?`<div class="cur"><span class="spin"></span><span>${j.current?esc(t('s_'+j.current,nameOf(j.currentArg||''))):'…'}</span><span class="mono muted" style="margin-left:auto;font-size:11px">${pct}%</span></div>`:
+      !j.running?`<div class="cur" style="font-weight:600">${ic(j.cancelled?'dot':j.errors?'alert':'check').replace('<svg','<svg style="width:16px;height:16px"')}<span>${j.cancelled?t('done_cancel'):j.errors?t('done_err',j.errors):t('done_ok')}</span></div>`:'';
+    const warn=j.await?`<div class="info wrn" style="margin:6px 0 10px">${ic('alert')}<div><b>${t('rp_warn_t')}</b><br>${esc(t('rp_warn_p',j.awaitMsg))}<br><br>${t('rp_warn_q')}</div></div>`:'';
+    box.innerHTML=cur+`<div class="prog"><div style="width:${j.running?pct:100}%"></div></div>`+warn+
+      `<div class="log">${j.log.map(l=>`<div class="ll ${l.kind}"><span class="k">${kindIc(l.kind)}</span><span>${esc(logText(l))}</span></div>`).join('')}</div>`;
+    const f=$('#jf');
+    if(j.await){f.classList.remove('hidden');f.innerHTML=`<button class="btn sec" onclick="mxConfirm(false)">${t('cancel')}</button><button class="btn pri" onclick="mxConfirm(true)">${t('continue_backup')}</button>`}
+    else if(j.running){f.classList.add('hidden')}
+    if(j.running){setTimeout(poll,220);return}
+    delete $('#ov').dataset.job;
+    f.classList.remove('hidden');
+    f.innerHTML=j.needReboot?`<button class="btn sec" onclick="closeModal()">${t('later')}</button><button class="btn pri" onclick="mxReboot()">${t('restart_now')}</button>`:`<button class="btn pri" onclick="closeModal()">${t('done')}</button>`;
+    S&&S.tweaks.forEach(x=>delete desired[x.id]);await refresh();
+  };
+  poll();
+}
+
+/* =====================================================================
+   Live tools
+   ===================================================================== */
+let presses=[],prev=[];
+function startLoops(){
+  if(loops)return;loops=true;
+  const kl=async()=>{
+    if(PAGE==='system'&&$('#k0')){try{const k=await mxKeys();k.forEach((d,i)=>{const e=$('#k'+i);if(e)e.classList.toggle('down',!!d);if(d&&!prev[i])presses.push(performance.now())});prev=k}catch(e){}
+      const now=performance.now();presses=presses.filter(x=>now-x<1000);const el=$('#kps');if(el)el.textContent=t('per_s',presses.length)}
+    setTimeout(kl,14)};kl();
+  const sl=async()=>{
+    if(PAGE==='system'){
+      try{const x=await mxTimer();const v=$('#tval');if(v){v.innerHTML=x.current.toFixed(3).replace('.',LANG==='de'?',':'.')+' <small>ms</small>';$('#tsw').classList.toggle('on',x.on);
+        $('#tbar').style.width=Math.max(3,Math.min(100,(x.coarsest-x.current)/(x.coarsest-x.finest)*100))+'%'}}catch(e){}
+      try{const f=await mxFiveM();const a=$('#fv');if(a){a.textContent=f.running?t('yes'):t('no');$('#pv').textContent=f.running?(f.high?t('yes'):t('normal')):'–'}}catch(e){}
+      loadSys();
+    }
+    setTimeout(sl,1500)};sl();
+  setInterval(()=>{if(!busy()&&!$('#ov')&&PAGE!=='tweaks')refresh()},10000);
+}
+async function toggleTimer(){const on=!$('#tsw').classList.contains('on');await mxSetTimer(on);$('#tsw').classList.toggle('on',on);toast(on?t('t_timer_on'):t('t_timer_off'))}
+async function boost(){const n=await mxBoostFiveM();n?toast(t('t_boost',n)):toast(t('t_no_fivem'),false)}
+
+document.addEventListener('contextmenu',e=>e.preventDefault());
+applyStatic();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-module mexictweaks
+module mexxictweaks
 
 go 1.22
 

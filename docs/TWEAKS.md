@@ -1,6 +1,8 @@
 # Alle Tweaks im Detail
 
-Hier steht jede Änderung, die Mexic Tweaks vornimmt. Vor dem ersten Anwenden wird der **aktuelle** Wert
+Kategorien in der App: **Input · Network · Windows · Gaming · FiveM**. Nach jedem Anwenden prüft MEXXIC den echten Wert. Die Restore-Seite zeigt pro Sicherung *Original → Neu*.
+
+Hier steht jede Änderung, die MEXXIC Tweaks vornimmt. Vor dem ersten Anwenden wird der **aktuelle** Wert
 gesichert (`%APPDATA%\MexxicTweaks\backup.json`). *Rückgängig* schreibt genau diesen Wert zurück.
 Falls es den Wert vorher nicht gab, wird er wieder gelöscht.
 
@@ -9,7 +11,7 @@ Falls es den Wert vorher nicht gab, wird er wieder gelöscht.
 
 ---
 
-## ⌨ Tastatur
+## Input (Tastatur & Maus)
 
 ### Shift-Popups AUS · `kb_popups`
 | Einstellung | Änderung |
@@ -38,7 +40,6 @@ Falls es den Wert vorher nicht gab, wird er wieder gelöscht.
 
 ---
 
-## 🖱 Maus
 
 ### Mausbeschleunigung AUS · `mouse_accel`
 | Einstellung | Neu | Windows-Standard |
@@ -49,10 +50,10 @@ Entspricht: *Mauseigenschaften → Zeigeroptionen → „Zeigerbeschleunigung ve
 
 ---
 
-## ⚙ System
+## Windows
 
 ### Ultimative Leistung · `power_plan`
-- `powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61` → neuer Plan **„Mexic Tweaks Ultimate“**, wird aktiviert
+- `powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61` → neuer Plan **„MEXXIC Ultimate“**, wird aktiviert
 - Falls nicht unterstützt: Fallback auf *Höchstleistung* (`8c5e7fda-…`)
 - Rückgängig: vorheriger Plan wird aktiviert, der erstellte Plan gelöscht
 
@@ -70,7 +71,7 @@ Entspricht: *Mauseigenschaften → Zeigeroptionen → „Zeigerbeschleunigung ve
 |---|---|---|---|
 | `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile` | `SystemResponsiveness` | `10` | `20` |
 
-### Spiele-Priorität ULTRA · `game_prio`
+### Spiele-Priorität ULTRA (Kategorie Gaming) · `game_prio`
 Pfad: `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games`
 
 | Wert | Neu | Standard |
@@ -80,19 +81,19 @@ Pfad: `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfil
 | `Scheduling Category` (SZ) | `High` | `Medium` |
 | `SFIO Priority` (SZ) | `High` | `Normal` |
 
-### Netzwerk-Drosselung AUS · `net_throttle` · *Neustart*
+### Netzwerk-Drosselung AUS (Kategorie Network) · `net_throttle` · *Neustart*
 | Pfad | Wert | Neu | Standard |
 |---|---|---|---|
 | `HKLM\…\Multimedia\SystemProfile` | `NetworkThrottlingIndex` | `0xFFFFFFFF` | `10` |
 
-### Xbox Game DVR AUS · `game_dvr`
+### Xbox Game DVR AUS (Kategorie Gaming) · `game_dvr`
 | Pfad | Wert | Neu |
 |---|---|---|
 | `HKCU\System\GameConfigStore` | `GameDVR_Enabled` | `0` |
 | `HKCU\Software\Microsoft\Windows\CurrentVersion\GameDVR` | `AppCaptureEnabled` | `0` |
 | `HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR` | `AllowGameDVR` | `0` |
 
-### Windows-Spielmodus AN · `game_mode`
+### Windows-Spielmodus AN (Kategorie Gaming) · `game_mode`
 | Pfad | Wert | Neu |
 |---|---|---|
 | `HKCU\Software\Microsoft\GameBar` | `AutoGameModeEnabled` | `1` |
@@ -103,11 +104,11 @@ Pfad: `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfil
 |---|---|---|
 | `HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel` | `GlobalTimerResolutionRequests` | `1` |
 
-Nötig ab Windows 11, damit der Schalter **Timer 0,5 ms** systemweit gilt.
+Nötig ab Windows 11, damit der Schalter **Timer 0,5 ms** (Seite System) systemweit gilt.
 
 ---
 
-## 🚗 FiveM
+## FiveM
 
 ### FiveM immer hohe Priorität · `fivem_prio`
 Pfad: `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\<EXE>\PerfOptions`
