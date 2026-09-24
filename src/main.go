@@ -28,7 +28,7 @@ import (
 //go:embed ui/index.html
 var uiHTML string
 
-const appVersion = "2.0.0"
+const appVersion = "2.0.1"
 
 var (
 	appDir    string

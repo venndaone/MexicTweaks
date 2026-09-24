@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.1 (24.09.2026)
+- Neues App-Icon (MEXXIC-Logo), kleine Größen zeigen nur das „M“
+- Logo in der README
+
 ## v2.0.0 (24.09.2026)
 - Neuer Name: **MEXXIC Tweaks**, neues Premium-UI in Schwarz/Weiß
 - Oberfläche auf **Deutsch und Englisch** (umschaltbar, wird gespeichert)

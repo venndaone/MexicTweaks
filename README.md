@@ -1,13 +1,13 @@
 <div align="center">
 
-<img src="docs/logo.png" width="88" alt="MEXXIC Logo">
+<img src="docs/logo.png" width="180" alt="MEXXIC Logo">
 
 # MEXXIC Tweaks
 
 **Input-, Netzwerk-, Windows-, Gaming- & FiveM-Optimierung für Windows 10/11.**
 Minimalistisch. Schwarz. Weiß. Schnell. Übersichtlich. Rücksetzbar.
 
-![Version](https://img.shields.io/badge/version-2.0.0-white?style=flat-square&labelColor=000)
+![Version](https://img.shields.io/badge/version-2.0.1-white?style=flat-square&labelColor=000)
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-white?style=flat-square&labelColor=000)
 ![Sprachen](https://img.shields.io/badge/Sprachen-DE%20%7C%20EN-white?style=flat-square&labelColor=000)
 ![Installation](https://img.shields.io/badge/Installation-keine-white?style=flat-square&labelColor=000)
@@ -140,6 +140,7 @@ build.bat
 ```
 src/
 ├─ main.go              Start, Fenster
+├─ icon.ico             App-Icon (16–256 px, eingebettet über rsrc_windows_amd64.syso)
 ├─ ui_bridge.go         UI ↔ Services
 ├─ ui/index.html        Oberfläche (HTML/CSS/JS, DE/EN, wird eingebettet)
 ├─ job_service.go       Services: Restore Point → Backup → Apply/Restore → Prüfung
